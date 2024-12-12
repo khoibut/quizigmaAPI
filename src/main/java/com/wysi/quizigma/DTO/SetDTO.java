@@ -9,6 +9,7 @@ public class SetDTO {
     private String description;
     private byte[] image;
     private List<QuestionDTO> questions;
+    private UserDTO owner;
 
     // Parameterized constructor
     public SetDTO(Integer id, String name, String description, byte[] image) {
@@ -57,5 +58,13 @@ public class SetDTO {
 
     public void setQuestions(List<QuestionDTO> questions) {
         this.questions = questions;
+    }
+
+    public UserDTO getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserDTO owner) {
+        this.owner = owner;
     }
 }
