@@ -3,6 +3,8 @@ package com.wysi.quizigma.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wysi.quizigma.DTO.UserDTO;
+import com.wysi.quizigma.JwtUtil;
 import com.wysi.quizigma.model.User;
 import com.wysi.quizigma.repository.UserRepository;
 
@@ -10,15 +12,32 @@ import com.wysi.quizigma.repository.UserRepository;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
-    public void authenticate(String email, String password) {
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+
+    public UserService(UserRepository userRepository, JwtUtil JwtUtil) {
+        this.userRepository = userRepository;
+        this.jwtUtil =  JwtUtil;
+    }
+    public String authenticate(String email, String password) {
         User user = userRepository.findByEmail(email);
         if (user == null || !user.getPassword().equals(password)) {
             throw new IllegalArgumentException("Invalid email or password");
         }
+        return jwtUtil.generateToken(user);
     }
-    public void addNewUser(String username, String email, String password) {
-        User user = new User(username, email, password);
-        userRepository.save(user);
+    public String addNewUser(UserDTO user) {
+        String username = user.getUsername();
+        String email = user.getEmail();
+        String password = user.getPassword();
+        if (userRepository.findByEmail(email) != null) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+        if (userRepository.findByUsername(username) != null) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+        User newUser = new User(username, email, password);
+        userRepository.save(newUser);
+        return jwtUtil.generateToken(newUser);
     }
 }
