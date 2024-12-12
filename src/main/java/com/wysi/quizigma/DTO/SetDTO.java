@@ -1,39 +1,24 @@
-package com.wysi.quizigma.model;
+package com.wysi.quizigma.DTO;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.util.List;
 
-@Entity
-@Table(name = "sets")
-public class Sets {
+public class SetDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(name = "name", nullable = false)
     private String name;
-
-    @Column(name = "description", nullable = false)
     private String description;
-    
-    @Column(name = "image", columnDefinition = "BYTEA")
     private byte[] image;
+    private List<QuestionDTO> questions;
 
-    //constructor for hibernate
-    public Sets() {
-    }
-
-    public Sets(String name, String description, byte[] image) {
+    // Parameterized constructor
+    public SetDTO(Integer id, String name, String description, byte[] image) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.image = image;
     }
 
+    // Getters and Setters
     public Integer getId() {
         return id;
     }
@@ -64,5 +49,13 @@ public class Sets {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public List<QuestionDTO> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<QuestionDTO> questions) {
+        this.questions = questions;
     }
 }
