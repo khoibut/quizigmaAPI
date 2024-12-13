@@ -1,6 +1,5 @@
 package com.wysi.quizigma;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
@@ -35,12 +34,6 @@ public class JwtUtil {
     }
 
     public Integer getUserId(String token) {
-        String userId = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("userId", String.class);
-        return Integer.valueOf(userId);
+        return Integer.valueOf(Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody().getSubject());
     }
 }
