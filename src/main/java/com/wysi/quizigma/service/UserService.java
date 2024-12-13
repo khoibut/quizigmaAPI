@@ -17,8 +17,9 @@ public class UserService {
 
     public UserService(UserRepository userRepository, JwtUtil JwtUtil) {
         this.userRepository = userRepository;
-        this.jwtUtil =  JwtUtil;
+        this.jwtUtil = JwtUtil;
     }
+
     public String authenticate(String email, String password) {
         User user = userRepository.findByEmail(email);
         if (user == null || !user.getPassword().equals(password)) {
@@ -26,6 +27,7 @@ public class UserService {
         }
         return jwtUtil.generateToken(user);
     }
+
     public String addNewUser(UserDTO user) {
         String username = user.getUsername();
         String email = user.getEmail();
@@ -39,5 +41,9 @@ public class UserService {
         User newUser = new User(username, email, password);
         userRepository.save(newUser);
         return jwtUtil.generateToken(newUser);
+    }
+
+    public User getUser(String token) {
+        return userRepository.findById(jwtUtil.getUserId(token)).orElse(null);
     }
 }
