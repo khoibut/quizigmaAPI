@@ -2,6 +2,7 @@ package com.wysi.quizigma.model;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,10 +11,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "question")
+@Table(name = "questions")
 public class Question {
 
     @Id
@@ -23,9 +25,9 @@ public class Question {
     @Column(name = "question", nullable = false)
     private String question;
 
-    @Column(name = "image", columnDefinition = "BYTEA")
-    private byte[] image;
-
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "image_id")
+    private Image image;
     @ManyToOne
     @JoinColumn(name = "set_id", nullable = false)
     private Set set;
@@ -39,9 +41,17 @@ public class Question {
     public Question() {
     }
 
-    public Question(String question, byte[] image, Set set, List<Option> options, List<Integer> answers) {
+    public Question(String question, Image image, Set set, List<Option> options, List<Integer> answers) {
         this.question = question;
         this.image = image;
+        this.set = set;
+        this.options = options;
+        this.answers = answers;
+    }
+
+    public Question(String question, String image, Set set, List<Option> options, List<Integer> answers) {
+        this.question = question;
+        this.image = new Image(image);
         this.set = set;
         this.options = options;
         this.answers = answers;
@@ -63,11 +73,15 @@ public class Question {
         this.question = question;
     }
 
-    public byte[] getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
+        this.image = new Image(image);
+    }
+
+    public void setImage(Image image) {
         this.image = image;
     }
 

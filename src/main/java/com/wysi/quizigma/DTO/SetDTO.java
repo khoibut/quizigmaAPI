@@ -1,22 +1,40 @@
 package com.wysi.quizigma.DTO;
 
+import java.util.Base64;
 import java.util.List;
+
+import com.wysi.quizigma.model.Image;
 
 public class SetDTO {
 
     private Integer id;
     private String name;
     private String description;
-    private byte[] image;
+    private String image;
     private List<QuestionDTO> questions;
-    private UserDTO owner;
 
     // Parameterized constructor
-    public SetDTO(Integer id, String name, String description, byte[] image) {
+    public SetDTO(Integer id, String name, String description, String image, List<QuestionDTO> questions) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.image = image;
+        this.questions = questions;
+    }
+
+    public SetDTO() {
+    }
+
+    public SetDTO(Integer id, String name, String description, Image image, List<QuestionDTO> questions) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        if(image.getImage()!=null){
+            this.image = image.getType()+Base64.getEncoder().encodeToString(image.getImage());
+        } else {
+            this.image = null;
+        }
+        this.questions = questions;
     }
 
     // Getters and Setters
@@ -44,11 +62,11 @@ public class SetDTO {
         this.description = description;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -60,11 +78,4 @@ public class SetDTO {
         this.questions = questions;
     }
 
-    public UserDTO getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UserDTO owner) {
-        this.owner = owner;
-    }
 }

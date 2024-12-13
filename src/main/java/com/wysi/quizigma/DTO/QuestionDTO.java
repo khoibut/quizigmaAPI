@@ -1,20 +1,39 @@
 package com.wysi.quizigma.DTO;
 
+import java.util.Base64;
 import java.util.List;
+
+import com.wysi.quizigma.model.Image;
 
 public class QuestionDTO {
 
     private Integer id;
     private String question;
-    private byte[] image;
+    private String image;
     private Integer setId;
     private List<OptionDTO> options;
     private List<Integer> answers;
 
-    public QuestionDTO(Integer id, String question, byte[] image, Integer setId, List<OptionDTO> options, List<Integer> answers) {
+    public QuestionDTO() {
+    }
+
+    public QuestionDTO(Integer id, String question, String image, Integer setId, List<OptionDTO> options, List<Integer> answers) {
         this.id = id;
         this.question = question;
         this.image = image;
+        this.setId = setId;
+        this.options = options;
+        this.answers = answers;
+    }
+
+    public QuestionDTO(Integer id, String question, Image image, Integer setId, List<OptionDTO> options, List<Integer> answers) {
+        this.id = id;
+        this.question = question;
+        if (image.getImage() != null) {
+            this.image = image.getType() + Base64.getEncoder().encodeToString(image.getImage());
+        } else {
+            this.image = null;
+        }
         this.setId = setId;
         this.options = options;
         this.answers = answers;
@@ -36,11 +55,11 @@ public class QuestionDTO {
         this.question = question;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
