@@ -46,4 +46,27 @@ public class UserService {
     public User getUser(String token) {
         return userRepository.findById(jwtUtil.getUserId(token)).orElse(null);
     }
+    
+    public String editUser(UserDTO user, String token) {
+        User currentUser = userRepository.findById(jwtUtil.getUserId(token)).orElse(null);
+        if (currentUser == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        if (user.getUsername() != null) {
+            currentUser.setUsername(user.getUsername());
+        }
+        if (user.getEmail() != null) {
+            currentUser.setEmail(user.getEmail());
+        }
+        if (user.getPassword() != null) {
+            currentUser.setPassword(user.getPassword());
+        }
+
+        try{
+            userRepository.save(currentUser);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid input");
+        }
+        return jwtUtil.generateToken(currentUser);
+    }
 }
