@@ -42,4 +42,8 @@ public class UserService {
         userRepository.save(newUser);
         return jwtUtil.generateToken(newUser);
     }
+
+    public User getUser(String token) {
+        return userRepository.findById(jwtUtil.getUserId(token)).orElse(null);
+    }
 }

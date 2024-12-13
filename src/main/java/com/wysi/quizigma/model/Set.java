@@ -2,6 +2,7 @@ package com.wysi.quizigma.model;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,10 +11,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "set")
+@Table(name = "sets")
 public class Set {
 
     @Id
@@ -25,24 +27,28 @@ public class Set {
 
     @Column(name = "description", nullable = false)
     private String description;
-    
-    @Column(name = "image", columnDefinition = "BYTEA")
-    private byte[] image;
 
-    @OneToMany(mappedBy = "set")
-    private List<Question> questions;
+    @OneToOne(cascade= CascadeType.ALL)
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
+
+    @OneToMany(mappedBy = "set")
+    private List<Question> questions;
+
     //constructor for hibernate
     public Set() {
     }
 
-    public Set(String name, String description, byte[] image) {
+    public Set(String name, String description, String base64Image, User owner, List<Question> questions) {
         this.name = name;
         this.description = description;
-        this.image = image;
+        this.image = new Image(base64Image);
+        this.owner = owner;
+        this.questions = questions;
     }
 
     public Integer getId() {
@@ -69,12 +75,16 @@ public class Set {
         this.description = description;
     }
 
-    public byte[] getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(Image image) {
         this.image = image;
+    }
+
+    public void setImage(String image) {
+        this.image = new Image(image);
     }
 
     public List<Question> getQuestions() {
