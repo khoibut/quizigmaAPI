@@ -1,13 +1,12 @@
 package com.wysi.quizigma;
 
-import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
 import com.wysi.quizigma.model.User;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -16,15 +15,16 @@ import io.jsonwebtoken.security.SignatureException;
 @Component
 public class JwtUtil {
 
-    private final String secret = Base64.getEncoder().encodeToString(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded());
+    private final String secret = "mAAfreMWN0HuHNYOd+c759cpS3rxlRjrIsQUsF3x5huXBMKojOgdNojgSCXHhkkq6J6pCYSZEgMJtoXdTVYRh4O1/bwxiHErRxy+QQhslR65VD38pWAqKTfSRJQVrnedgrPZY/ZbJoivaCxaUXnxHqvsFHPlMBlh46bw70MK4nRu5xY3U9ZDzFEUITARYGbvnt6wR/yK4vFhzltU4C/xt+xgrhArJegrv83y1w1BPQlfK/SmlAW8fhSiZm3GN1pyTBfMoXz2cyr+GJy/Z/8s5Q3NO78H5fBrORftgTmZXnaT4AU4Dhfyn/5O8+0gQQI5VWWi5AzdvoLYUXsA0MG5beKN0UCzFD0QzNxBG89TFn4=";
 
     public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .setSubject(user.getId().toString())
                 .setIssuedAt(new Date())
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
+
     public boolean isValid(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token);
@@ -33,7 +33,14 @@ public class JwtUtil {
             return false;
         }
     }
-    public Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody();
+
+    public Integer getUserId(String token) {
+        String userId = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("userId", String.class);
+        return Integer.valueOf(userId);
     }
 }

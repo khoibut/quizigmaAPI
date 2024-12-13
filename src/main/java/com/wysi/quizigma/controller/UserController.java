@@ -43,7 +43,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<Map<String, Object>> addNewUser(@RequestBody UserDTO user) {
         try {
             String token = userService.addNewUser(user);
