@@ -29,18 +29,21 @@ public class QuestionService {
 
     public void createNewQuestion(QuestionDTO question) {
         List<Option> options = new ArrayList<>();
+        System.out.println(question.getSetId());
         Set set = setRepository.findById(question.getSetId()).orElse(null);
-        for (OptionDTO option : question.getOptions()) {
-            options.add(new Option(option.getOption(), option.getImage()));
-        }
-        questionRepository.save(new Question(
+        Question newQuestion = new Question(
                 question.getQuestion(),
                 question.getImage(),
                 set,
                 options,
                 question.getAnswers()
-        ));
-
+        );
+        for (OptionDTO optionDTO : question.getOptions()) {
+            Option option = new Option(optionDTO.getOption(), optionDTO.getImage());
+            option.setQuestion(newQuestion);
+            options.add(option);
+        }
+        questionRepository.save(newQuestion);
     }
 
     public List<QuestionDTO> getQuestionsBySet(Integer setId) {
@@ -71,15 +74,17 @@ public class QuestionService {
     public void editQuestion(QuestionDTO question) {
         List<Option> options = new ArrayList<>();
         Set set = setRepository.findById(question.getSetId()).orElse(null);
-        for (OptionDTO option : question.getOptions()) {
-            options.add(new Option(option.getOption(), option.getImage()));
-        }
         Question newQuestion = questionRepository.findById(question.getId()).orElse(null);
         newQuestion.setQuestion(question.getQuestion());
         newQuestion.setImage(question.getImage());
         newQuestion.setSet(set);
         newQuestion.setOptions(options);
         newQuestion.setAnswers(question.getAnswers());
+        for (OptionDTO optionDTO : question.getOptions()) {
+            Option option = new Option(optionDTO.getOption(), optionDTO.getImage());
+            option.setQuestion(newQuestion);
+            options.add(option);
+        }
         questionRepository.save(newQuestion);
     }
 }

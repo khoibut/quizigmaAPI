@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.wysi.quizigma.DTO.QuestionDTO;
 import com.wysi.quizigma.service.QuestionService;
@@ -17,7 +19,7 @@ import com.wysi.quizigma.service.QuestionService;
 
 
 @RestController
-@RequestMapping("/api/question")
+@RequestMapping("/api")
 public class QuestionController {
     
     @Autowired
@@ -27,8 +29,9 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    @PostMapping("")
-    public ResponseEntity<Object> createNewQuestion(@RequestParam("id") int id, QuestionDTO question ) {
+    @PostMapping("/{setId}/question")
+    public ResponseEntity<Object> createNewQuestion(@PathVariable int setId, @RequestBody QuestionDTO question ) {
+        question.setSetId(setId);
         questionService.createNewQuestion(question);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
