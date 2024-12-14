@@ -25,9 +25,10 @@ public class Question {
     @Column(name = "question", nullable = false)
     private String question;
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
     private Image image;
+    
     @ManyToOne
     @JoinColumn(name = "set_id", nullable = false)
     private Set set;
