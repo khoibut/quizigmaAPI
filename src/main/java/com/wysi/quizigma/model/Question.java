@@ -33,10 +33,10 @@ public class Question {
     @JoinColumn(name = "set_id", nullable = false)
     private Set set;
 
-    @OneToMany
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Option> options;
 
-    @Column(name = "correct_option", nullable = false)
+    @Column(name = "answers", nullable = false)
     private List<Integer> answers;
 
     public Question() {
