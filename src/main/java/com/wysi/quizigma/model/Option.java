@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -20,6 +21,10 @@ public class Option {
 
     @Column(name = "option")
     private String option;
+
+    @ManyToOne
+    @JoinColumn(name="question_id", nullable=false)
+    private Question question;
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "image_id")
