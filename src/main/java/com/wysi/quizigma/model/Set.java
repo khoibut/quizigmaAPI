@@ -25,7 +25,7 @@ public class Set {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @OneToOne(cascade= CascadeType.ALL)
@@ -36,7 +36,7 @@ public class Set {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @OneToMany(mappedBy = "set")
+    @OneToMany(mappedBy = "set", cascade= CascadeType.ALL)
     private List<Question> questions;
 
     //constructor for hibernate

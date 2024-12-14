@@ -25,17 +25,18 @@ public class Question {
     @Column(name = "question", nullable = false)
     private String question;
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
     private Image image;
+    
     @ManyToOne
     @JoinColumn(name = "set_id", nullable = false)
     private Set set;
 
-    @OneToMany
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Option> options;
 
-    @Column(name = "correct_option", nullable = false)
+    @Column(name = "answers", nullable = false)
     private List<Integer> answers;
 
     public Question() {
