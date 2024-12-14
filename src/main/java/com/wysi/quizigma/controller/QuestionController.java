@@ -36,20 +36,21 @@ public class QuestionController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("")
-    public ResponseEntity<Object> getQuestionBySetId(@RequestParam("id") int id) {
+    @GetMapping("/{setId}/question")
+    public ResponseEntity<Object> getQuestionBySetId(@PathVariable("setId") int id) {
         return new ResponseEntity<>(questionService.getQuestionsBySet(id), HttpStatus.OK);
     }
 
-    @PatchMapping("")
-    public ResponseEntity<Object> editQuestion(@RequestParam("id") int id, QuestionDTO question) {
+    @PatchMapping("/question/{id}")
+    public ResponseEntity<Object> editQuestion(@PathVariable int id, @RequestBody QuestionDTO question) {
+        question.setId(id);
         questionService.editQuestion(question);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
-    @DeleteMapping("")
-    public ResponseEntity<Object> deleteQuestion(@RequestParam("id") int id, QuestionDTO question) {
-        questionService.deleteQuestion(question.getId());
+    @DeleteMapping("/question/{id}")
+    public ResponseEntity<Object> deleteQuestion(@PathVariable int id) {
+        questionService.deleteQuestion(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
