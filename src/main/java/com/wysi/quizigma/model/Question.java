@@ -28,7 +28,7 @@ public class Question {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
     private Image image;
-    
+
     @ManyToOne
     @JoinColumn(name = "set_id", nullable = false)
     private Set set;

@@ -71,4 +71,8 @@ public class Option {
         this.image = new Image(image);
     }
 
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
+
 }
