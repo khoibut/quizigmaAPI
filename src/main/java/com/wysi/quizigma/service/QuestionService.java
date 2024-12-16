@@ -29,20 +29,20 @@ public class QuestionService {
 
     public void createNewQuestion(QuestionDTO question) {
         List<Option> options = new ArrayList<>();
-        System.out.println(question.getSetId());
+        List<Integer> answers = question.getAnswers();
         Set set = setRepository.findById(question.getSetId()).orElse(null);
-        Question newQuestion = new Question(
-                question.getQuestion(),
-                question.getImage(),
-                set,
-                options,
-                question.getAnswers()
-        );
+        System.out.println(answers);
+        Question newQuestion = new Question();
         for (OptionDTO optionDTO : question.getOptions()) {
             Option option = new Option(optionDTO.getOption(), optionDTO.getImage());
             option.setQuestion(newQuestion);
             options.add(option);
         }
+        newQuestion.setQuestion(question.getQuestion());
+        newQuestion.setImage(question.getImage());
+        newQuestion.setSet(set);
+        newQuestion.setOptions(options);
+        newQuestion.setAnswers(answers);
         questionRepository.save(newQuestion);
     }
 
@@ -53,7 +53,7 @@ public class QuestionService {
         for (Question question : questions) {
             List<OptionDTO> optionDTOs = new ArrayList<>();
             for (Option option : question.getOptions()) {
-                optionDTOs.add(new OptionDTO(option.getOption(), option.getImage()));
+                optionDTOs.add(new OptionDTO(option.getId(),option.getOption(), option.getImage()));
             }
             questionDTOs.add(new QuestionDTO(
                     question.getId(),
@@ -78,13 +78,13 @@ public class QuestionService {
         newQuestion.setQuestion(question.getQuestion());
         newQuestion.setImage(question.getImage());
         newQuestion.setSet(set);
-        newQuestion.setOptions(options);
         newQuestion.setAnswers(question.getAnswers());
         for (OptionDTO optionDTO : question.getOptions()) {
-            Option option = new Option(optionDTO.getOption(), optionDTO.getImage());
+            Option option = new Option(optionDTO.getId(),optionDTO.getOption(), optionDTO.getImage());
             option.setQuestion(newQuestion);
             options.add(option);
         }
+        newQuestion.setOptions(options);
         questionRepository.save(newQuestion);
     }
 }
