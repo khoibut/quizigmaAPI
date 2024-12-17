@@ -38,6 +38,17 @@ public class Option {
         this.image = image;
     }
 
+    public Option(Integer id, String option, Image image) {
+        this.id = id;
+        this.option = option;
+        this.image = image;
+    }
+
+    public Option(Integer id,String option, String image) {
+        this.id = id;
+        this.option = option;
+        this.image = new Image(image);
+    }
     public Option(String option, String image) {
         this.option = option;
         this.image = new Image(image);
@@ -69,6 +80,10 @@ public class Option {
 
     public void setImage(String image) {
         this.image = new Image(image);
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
 }

@@ -19,7 +19,7 @@ public class Image {
     @Column(name = "image", columnDefinition = "BYTEA")
     private byte[] image;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "type")
     private String type;
 
     public Image() {

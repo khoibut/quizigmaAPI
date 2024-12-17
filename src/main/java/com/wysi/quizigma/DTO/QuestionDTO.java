@@ -1,5 +1,6 @@
 package com.wysi.quizigma.DTO;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -11,19 +12,19 @@ public class QuestionDTO {
     private String question;
     private String image;
     private Integer setId;
-    private List<OptionDTO> options;
+    private List<OptionDTO> options=new ArrayList<>();
     private List<Integer> answers;
 
     public QuestionDTO() {
     }
 
-    public QuestionDTO(Integer id, String question, String image, Integer setId, List<OptionDTO> options, List<Integer> answers) {
-        this.id = id;
+    public QuestionDTO(String question, String image, Integer setId, List<OptionDTO> options, List<Integer> answers) {
+        this.id = null;
         this.question = question;
         this.image = image;
         this.setId = setId;
         this.options = options;
-        this.answers = answers;
+        this.answers = answers != null ? answers : new ArrayList<>();
     }
 
     public QuestionDTO(Integer id, String question, Image image, Integer setId, List<OptionDTO> options, List<Integer> answers) {
@@ -54,7 +55,7 @@ public class QuestionDTO {
     public void setQuestion(String question) {
         this.question = question;
     }
-
+    
     public String getImage() {
         return image;
     }
