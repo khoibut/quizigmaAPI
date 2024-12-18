@@ -32,50 +32,23 @@ public class SetService {
         String name = set.getName();
         String description = set.getDescription();
         String image = set.getImage();
-        List<Question> questions = new ArrayList<>();
-        for (QuestionDTO question : set.getQuestions()) {
-            List<Option> options = new ArrayList<>();
-            for (OptionDTO option : question.getOptions()) {
-                options.add(new Option(option.getOption(), option.getImage()));
-            }
-            questions.add(new Question(
-                    question.getQuestion(),
-                    question.getImage(),
-                    setRepository.findById(question.getSetId()).orElse(null),
-                    options,
-                    question.getAnswers()
-            ));
-        }
-        setRepository.save(new Set(name, description, image, owner, questions));
+        setRepository.save(new Set(name, description, image, owner, new ArrayList<Question>()));
     }
 
     public List<SetDTO> getSetsByOwner(Integer Id) {
         User owner = userRepository.findById(Id).orElse(null);
         List<Set> sets = setRepository.findByOwner(owner);
         List<SetDTO> setDTOs = new ArrayList<>();
-        for (Set set : sets) {
-            List<QuestionDTO> questionDTOs = new ArrayList<>();
-            for (Question question : set.getQuestions()) {
-                List<OptionDTO> optionDTOs = new ArrayList<>();
-                for (Option option : question.getOptions()) {
-                    optionDTOs.add(new OptionDTO(option.getOption(), option.getImage()));
+        for(Set set : sets) {
+            List<QuestionDTO> questions = new ArrayList<>();
+            for(Question question : set.getQuestions()) {
+                List<OptionDTO> options = new ArrayList<>();
+                for(Option option : question.getOptions()) {
+                    options.add(new OptionDTO(option.getId(),option.getOption(), option.getImage()));
                 }
-                questionDTOs.add(new QuestionDTO(
-                        question.getId(),
-                        question.getQuestion(),
-                        question.getImage(),
-                        question.getSet().getId(),
-                        optionDTOs,
-                        question.getAnswers()
-                ));
+                questions.add(new QuestionDTO(question.getId(), question.getQuestion(), question.getImage(), question.getSet().getId(), options, question.getAnswers()));
             }
-            setDTOs.add(new SetDTO(
-                    set.getId(),
-                    set.getName(),
-                    set.getDescription(),
-                    set.getImage(),
-                    questionDTOs
-            ));
+            setDTOs.add(new SetDTO(set.getId(), set.getName(), set.getDescription(), set.getImage(), questions));
         }
         return setDTOs;
     }
@@ -91,10 +64,11 @@ public class SetService {
         setRepository.save(setToEdit);
     }
 
-    public void deleteSet(SetDTO set, User owner) {
-        if(setRepository.findById(set.getId()).orElse(null).getOwner() != owner) {
+    public void deleteSet(Integer setId, User owner) {
+
+        if(setRepository.findById(setId).orElse(null).getOwner() != owner) {
             throw new IllegalArgumentException("You are not the owner of this set");
         }
-        setRepository.delete(setRepository.findById(set.getId()).orElse(null));
+        setRepository.delete(setRepository.findById(setId).orElse(null));
     }
 }

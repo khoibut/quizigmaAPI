@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wysi.quizigma.DTO.SetDTO;
@@ -39,14 +40,14 @@ public class SetController {
 
     @GetMapping("")
     public ResponseEntity<List<SetDTO>> getSets(@RequestHeader("Authorization") String token) {
-
+        
         return new ResponseEntity<>(setService.getSetsByOwner(userService.getUser(token).getId()), HttpStatus.OK);
     }
     
     @DeleteMapping("")
-    public ResponseEntity<Object> deleteSet(@RequestBody SetDTO set, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Object> deleteSet(@RequestParam Integer id, @RequestHeader("Authorization") String token) {
         try{
-            setService.deleteSet(set, userService.getUser(token));
+            setService.deleteSet(id, userService.getUser(token));
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
