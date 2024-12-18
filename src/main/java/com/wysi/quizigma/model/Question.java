@@ -29,7 +29,7 @@ public class Question {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
     private Image image;
-    
+
     @ManyToOne
     @JoinColumn(name = "set_id", nullable = false)
     private Set set;
@@ -38,7 +38,7 @@ public class Question {
     private List<Option> options;
 
     @ElementCollection
-    @Column(name = "answers", nullable = false)
+    @Column(name = "answers", nullable = true)
     private List<Integer> answers;
 
     public Question() {
