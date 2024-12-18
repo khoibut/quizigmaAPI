@@ -26,6 +26,21 @@ public class OptionDTO {
             this.image = null;
         }
     }
+    public OptionDTO(Integer id, String option, Image image) {
+        this.id = id;
+        this.option = option;
+        if (image.getImage() != null) {
+            this.image = image.getType()+Base64.getEncoder().encodeToString(image.getImage());
+        } else {
+            this.image = null;
+        }
+    }
+
+    public OptionDTO(Integer id, String option, String image) {
+        this.id = id;
+        this.option = option;
+        this.image = image;
+    }
     public Integer getId() {
         return id;
     }
