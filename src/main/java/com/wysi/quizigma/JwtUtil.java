@@ -2,6 +2,7 @@ package com.wysi.quizigma;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.wysi.quizigma.model.User;
@@ -13,8 +14,8 @@ import io.jsonwebtoken.security.SignatureException;
 
 @Component
 public class JwtUtil {
-
-    private final String secret = "mAAfreMWN0HuHNYOd+c759cpS3rxlRjrIsQUsF3x5huXBMKojOgdNojgSCXHhkkq6J6pCYSZEgMJtoXdTVYRh4O1/bwxiHErRxy+QQhslR65VD38pWAqKTfSRJQVrnedgrPZY/ZbJoivaCxaUXnxHqvsFHPlMBlh46bw70MK4nRu5xY3U9ZDzFEUITARYGbvnt6wR/yK4vFhzltU4C/xt+xgrhArJegrv83y1w1BPQlfK/SmlAW8fhSiZm3GN1pyTBfMoXz2cyr+GJy/Z/8s5Q3NO78H5fBrORftgTmZXnaT4AU4Dhfyn/5O8+0gQQI5VWWi5AzdvoLYUXsA0MG5beKN0UCzFD0QzNxBG89TFn4=";
+    @Value("${jwt.secret}")
+    private String secret;
 
     public String generateToken(User user) {
         return Jwts.builder()
@@ -26,14 +27,18 @@ public class JwtUtil {
 
     public boolean isValid(String token) {
         try {
+            token=token.replace("Bearer ", "").trim();
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token);
+            System.out.println("JWT Token is valid");
             return true;
         } catch (SignatureException | io.jsonwebtoken.MalformedJwtException | io.jsonwebtoken.ExpiredJwtException | io.jsonwebtoken.UnsupportedJwtException | IllegalArgumentException e) {
+            System.err.println("JWT Token validation failed: " + e.getMessage());
             return false;
         }
     }
 
     public Integer getUserId(String token) {
+        token=token.replace("Bearer ", "").trim();
         return Integer.valueOf(Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody().getSubject());
     }
 }
