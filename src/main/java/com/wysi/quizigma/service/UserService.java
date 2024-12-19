@@ -49,9 +49,6 @@ public class UserService {
     
     public String editUser(UserDTO user, String token) {
         User currentUser = userRepository.findById(jwtUtil.getUserId(token)).orElse(null);
-        if (currentUser == null) {
-            throw new IllegalArgumentException("User not found");
-        }
         if (user.getUsername() != null) {
             currentUser.setUsername(user.getUsername());
         }
