@@ -42,6 +42,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 System.out.println("Authentication set: " + authentication);
             } catch (JwtException | IllegalArgumentException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid or missing token");
+                response.getWriter().flush();
+                response.getWriter().close();
                 return;
             }
         } else {
