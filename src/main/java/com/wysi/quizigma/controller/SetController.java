@@ -21,7 +21,7 @@ import com.wysi.quizigma.service.UserService;
 
 
 @RestController
-@RequestMapping("/api/set")
+@RequestMapping("/api/v1/set")
 public class SetController {
 
     private final SetService setService;

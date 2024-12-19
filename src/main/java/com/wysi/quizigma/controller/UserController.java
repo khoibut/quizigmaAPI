@@ -17,7 +17,7 @@ import com.wysi.quizigma.Security.JwtUtil;
 import com.wysi.quizigma.service.UserService;
 
 @RestController
-@RequestMapping("/api/acc")
+@RequestMapping("/api/v1/acc")
 public class UserController {
 
     private final UserService userService;
