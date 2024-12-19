@@ -32,7 +32,7 @@ public class SetService {
         String name = set.getName();
         String description = set.getDescription();
         String image = set.getImage();
-        setRepository.save(new Set(name, description, image, owner, new ArrayList<Question>()));
+        setRepository.save(new Set(name, description, image, owner, new ArrayList<>()));
     }
 
     public List<SetDTO> getSetsByOwner(Integer Id) {
