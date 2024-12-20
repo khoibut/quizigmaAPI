@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wysi.quizigma.DTO.UserDTO;
-import com.wysi.quizigma.JwtUtil;
+import com.wysi.quizigma.Security.JwtUtil;
 import com.wysi.quizigma.model.User;
 import com.wysi.quizigma.repository.UserRepository;
 

@@ -18,7 +18,7 @@ import com.wysi.quizigma.service.QuestionService;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class QuestionController {
     
     @Autowired

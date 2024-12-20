@@ -2,6 +2,8 @@ package com.wysi.quizigma.model;
 
 import java.util.List;
 
+import com.wysi.quizigma.Security.InputSanitizer;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -45,6 +47,7 @@ public class Question {
     }
 
     public Question(String question, Image image, Set set, List<Option> options, List<Integer> answers) {
+        question = new InputSanitizer().sanitize(question);
         this.question = question;
         this.image = image;
         this.set = set;
@@ -53,6 +56,7 @@ public class Question {
     }
 
     public Question(String question, String image, Set set, List<Option> options, List<Integer> answers) {
+        question = new InputSanitizer().sanitize(question);
         this.question = question;
         this.image = new Image(image);
         this.set = set;
@@ -73,6 +77,7 @@ public class Question {
     }
 
     public void setQuestion(String question) {
+        question = new InputSanitizer().sanitize(question);
         this.question = question;
     }
 

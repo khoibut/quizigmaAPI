@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wysi.quizigma.DTO.UserDTO;
-import com.wysi.quizigma.JwtUtil;
+import com.wysi.quizigma.Security.JwtUtil;
 import com.wysi.quizigma.service.UserService;
 
 @RestController
-@RequestMapping("/api/acc")
+@RequestMapping("/api/v1/acc")
 public class UserController {
 
     private final UserService userService;

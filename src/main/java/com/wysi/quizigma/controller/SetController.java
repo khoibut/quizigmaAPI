@@ -21,7 +21,7 @@ import com.wysi.quizigma.service.UserService;
 
 
 @RestController
-@RequestMapping("/api/set")
+@RequestMapping("/api/v1/set")
 public class SetController {
 
     private final SetService setService;
@@ -40,7 +40,6 @@ public class SetController {
 
     @GetMapping("")
     public ResponseEntity<List<SetDTO>> getSets(@RequestHeader("Authorization") String token) {
-        
         return new ResponseEntity<>(setService.getSetsByOwner(userService.getUser(token).getId()), HttpStatus.OK);
     }
     

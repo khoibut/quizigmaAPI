@@ -2,6 +2,8 @@ package com.wysi.quizigma.model;
 
 import java.util.List;
 
+import com.wysi.quizigma.Security.InputSanitizer;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,6 +46,8 @@ public class Set {
     }
 
     public Set(String name, String description, String base64Image, User owner, List<Question> questions) {
+        name = new InputSanitizer().sanitize(name);
+        description = new InputSanitizer().sanitize(description);
         this.name = name;
         this.description = description;
         this.image = new Image(base64Image);
@@ -64,6 +68,7 @@ public class Set {
     }
 
     public void setName(String name) {
+        name = new InputSanitizer().sanitize(name);
         this.name = name;
     }
 
@@ -72,6 +77,7 @@ public class Set {
     }
 
     public void setDescription(String description) {
+        description = new InputSanitizer().sanitize(description);
         this.description = description;
     }
 
