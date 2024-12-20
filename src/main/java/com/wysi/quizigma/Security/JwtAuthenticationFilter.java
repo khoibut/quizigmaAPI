@@ -3,6 +3,7 @@ package com.wysi.quizigma.Security;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
+@Order(2) // Ensure the filter has a registered order
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -47,9 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.getWriter().close();
                 return;
             }
-        } else {
-            filterChain.doFilter(request, response);
-            return;
         }
         filterChain.doFilter(request, response);
     }

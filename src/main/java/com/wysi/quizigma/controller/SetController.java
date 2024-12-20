@@ -40,7 +40,6 @@ public class SetController {
 
     @GetMapping("")
     public ResponseEntity<List<SetDTO>> getSets(@RequestHeader("Authorization") String token) {
-        
         return new ResponseEntity<>(setService.getSetsByOwner(userService.getUser(token).getId()), HttpStatus.OK);
     }
     

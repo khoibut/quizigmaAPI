@@ -29,17 +29,13 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable) // Disabling CSRF for stateless API
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.POST, "/api/acc/auth", "/api/acc").permitAll()  // Public access to specific endpoints
+                .requestMatchers(HttpMethod.POST, "/api/v1/acc/auth", "/api/v1/acc").permitAll()  // Public access to specific endpoints
                 .anyRequest().authenticated()  // Secure all other endpoints
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No session
             .headers(headers -> headers
                 .contentSecurityPolicy(csp -> csp
                     .policyDirectives("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self';")
-                )
-                .httpStrictTransportSecurity(hsts -> hsts
-                    .includeSubDomains(true)
-                    .maxAgeInSeconds(31536000) // 1 year
                 )
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())  // Allows framing of the content only from the same origin
                 .referrerPolicy(referrer -> referrer
@@ -49,7 +45,7 @@ public class SecurityConfig {
             );
 
         // Add Rate Limit Filter before JWT Authentication Filter
-        http.addFilterBefore(rateLimitFilter(), JwtAuthenticationFilter.class);
+        http.addFilterBefore(rateLimitFilter(), UsernamePasswordAuthenticationFilter.class);
 
         // Add JWT Authentication Filter to handle authentication
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
