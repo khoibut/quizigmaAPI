@@ -1,5 +1,7 @@
 package com.wysi.quizigma.model;
 
+import com.wysi.quizigma.Security.InputSanitizer;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,22 +36,26 @@ public class Option {
     }
 
     public Option(String option, Image image) {
+        option=new InputSanitizer().sanitize(option);
         this.option = option;
         this.image = image;
     }
 
     public Option(Integer id, String option, Image image) {
+        option=new InputSanitizer().sanitize(option);
         this.id = id;
         this.option = option;
         this.image = image;
     }
 
     public Option(Integer id,String option, String image) {
+        option=new InputSanitizer().sanitize(option);
         this.id = id;
         this.option = option;
         this.image = new Image(image);
     }
     public Option(String option, String image) {
+        option=new InputSanitizer().sanitize(option);
         this.option = option;
         this.image = new Image(image);
     }
@@ -67,6 +73,7 @@ public class Option {
     }
 
     public void setOption(String option) {
+        option=new InputSanitizer().sanitize(option);
         this.option = option;
     }
 
@@ -79,6 +86,7 @@ public class Option {
     }
 
     public void setImage(String image) {
+        option=new InputSanitizer().sanitize(option);
         this.image = new Image(image);
     }
 

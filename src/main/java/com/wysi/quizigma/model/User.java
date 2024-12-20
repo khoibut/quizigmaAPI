@@ -1,5 +1,7 @@
 package com.wysi.quizigma.model;
 
+import com.wysi.quizigma.Security.InputSanitizer;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +30,8 @@ public class User {
     }
 
     public User(String username, String email, String password) {
+        username = new InputSanitizer().sanitize(username);
+        email = new InputSanitizer().sanitize(email);
         this.username = username;
         this.email = email;
         this.password = password;
@@ -46,6 +50,7 @@ public class User {
     }
 
     public void setUsername(String username) {
+        username = new InputSanitizer().sanitize(username);
         this.username = username;
     }
 
@@ -54,6 +59,7 @@ public class User {
     }
 
     public void setEmail(String email) {
+        email = new InputSanitizer().sanitize(email);
         this.email = email;
     }
 

@@ -2,6 +2,8 @@ package com.wysi.quizigma.model;
 
 import java.util.Base64;
 
+import com.wysi.quizigma.Security.InputSanitizer;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +33,7 @@ public class Image {
     }
 
     public Image(String image) {
+        image = new InputSanitizer().sanitize(image);
         if (image != null && image.startsWith("data:image")) {
             this.image = Base64.getDecoder().decode(image.split(",")[1]);
             this.type = image.split(",")[0];
