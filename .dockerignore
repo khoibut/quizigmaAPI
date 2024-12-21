@@ -1,0 +1,12 @@
+src/
+test/
+target/
+!target/*.jar
+var/log/
+.env
+.vscode/
+.git
+.gitignore
+.mvn/
+mvnw
+mvnw.cmd
