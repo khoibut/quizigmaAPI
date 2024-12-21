@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 @Order(1)
 public class RateLimitFilter extends OncePerRequestFilter {
-    private final static Logger logger = LoggerFactory.getLogger(RateLimitFilter.class);
+    private final static Logger rateLimitLogger = LoggerFactory.getLogger(RateLimitFilter.class);
     private final ConcurrentHashMap<String, Bucket> buckets = new ConcurrentHashMap<>();
 
     private static final int REQUESTS_PER_PERIOD = 5;
@@ -56,7 +56,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
             response.setStatus(429);
             response.setContentType("application/json");
             response.getWriter().write("{\"message\": \"Rate limit exceeded. Try again later.\"}");
-            logger.warn("Rate limit exceeded for client {}", clientId);
+            rateLimitLogger.warn("Rate limit exceeded for client {}", clientId);
         }
     }
 

@@ -73,14 +73,14 @@ public class QuestionService {
     }
 
     public void deleteQuestion(Integer id, String token) {
-        if(userService.getUser(token).getId() != questionRepository.findById(id).orElse(null).getSet().getOwner().getId()) {
+        if(!userService.getUser(token).getId().equals(questionRepository.findById(id).orElse(null).getSet().getOwner().getId())) {
             throw new IllegalArgumentException("You are not the owner of this set");
         }
         questionRepository.deleteById(id);
     }
 
     public void editQuestion(QuestionDTO question, String token) {
-        if(userService.getUser(token).getId() != questionRepository.findById(question.getId()).orElse(null).getSet().getOwner().getId()) {
+        if(!userService.getUser(token).getId().equals(questionRepository.findById(question.getId()).orElse(null).getSet().getOwner().getId())) {
             throw new IllegalArgumentException("You are not the owner of this set");
         }
         List<Option> options = new ArrayList<>();

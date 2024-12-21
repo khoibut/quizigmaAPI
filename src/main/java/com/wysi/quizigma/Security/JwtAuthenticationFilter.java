@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final static Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private final static Logger jwtLogger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.getWriter().write("Invalid or missing token");
                 response.getWriter().flush();
                 response.getWriter().close();
-                logger.error("Invalid or missing token {}", token);
+                jwtLogger.error("Invalid or missing token {}", token);
                 return;
             }
         }
