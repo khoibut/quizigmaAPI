@@ -2,6 +2,8 @@ package com.wysi.quizigma.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,7 +25,7 @@ import com.wysi.quizigma.service.UserService;
 @RestController
 @RequestMapping("/api/v1/set")
 public class SetController {
-
+    private static final Logger logger = LoggerFactory.getLogger(SetController.class);
     private final SetService setService;
     private final UserService userService;
 
@@ -48,6 +50,7 @@ public class SetController {
         try{
             setService.deleteSet(id, userService.getUser(token));
         } catch (IllegalArgumentException e) {
+            logger.error("Error deleting set id {}, by user id P{} ", id, userService.getUser(token).getId());
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -58,6 +61,7 @@ public class SetController {
         try{
             setService.editSet(set, userService.getUser(token));
         } catch (IllegalArgumentException e) {
+            logger.error("Error updating set id {}, by user id P{} ", set.getId(), userService.getUser(token).getId());
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);

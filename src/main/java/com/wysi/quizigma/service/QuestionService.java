@@ -21,13 +21,18 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     @Autowired
     private final SetRepository setRepository;
-
-    public QuestionService(QuestionRepository questionRepository, SetRepository setRepository) {
+    @Autowired
+    private final UserService userService;
+    public QuestionService(QuestionRepository questionRepository, SetRepository setRepository, UserService userService) {
         this.questionRepository = questionRepository;
         this.setRepository = setRepository;
+        this.userService = userService;
     }
 
-    public void createNewQuestion(QuestionDTO question) {
+    public void createNewQuestion(QuestionDTO question, String token) {
+        if(userService.getUser(token).getId() != setRepository.findById(question.getSetId()).orElse(null).getOwner().getId()) {
+            throw new IllegalArgumentException("You are not the owner of this set");
+        }
         List<Option> options = new ArrayList<>();
         List<Integer> answers = question.getAnswers();
         Set set = setRepository.findById(question.getSetId()).orElse(null);
@@ -67,11 +72,17 @@ public class QuestionService {
         return questionDTOs;
     }
 
-    public void deleteQuestion(Integer id) {
+    public void deleteQuestion(Integer id, String token) {
+        if(userService.getUser(token).getId() != questionRepository.findById(id).orElse(null).getSet().getOwner().getId()) {
+            throw new IllegalArgumentException("You are not the owner of this set");
+        }
         questionRepository.deleteById(id);
     }
 
-    public void editQuestion(QuestionDTO question) {
+    public void editQuestion(QuestionDTO question, String token) {
+        if(userService.getUser(token).getId() != questionRepository.findById(question.getId()).orElse(null).getSet().getOwner().getId()) {
+            throw new IllegalArgumentException("You are not the owner of this set");
+        }
         List<Option> options = new ArrayList<>();
         Set set = setRepository.findById(question.getSetId()).orElse(null);
         Question newQuestion = questionRepository.findById(question.getId()).orElse(null);
