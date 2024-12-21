@@ -1,4 +1,4 @@
-package com.wysi.quizigma.Security;
+package com.wysi.quizigma.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,27 +27,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable) // Disabling CSRF for stateless API
+            .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.POST, "/api/v1/acc/auth", "/api/v1/acc").permitAll()  // Public access to specific endpoints
-                .anyRequest().authenticated()  // Secure all other endpoints
+                .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/acc/auth", "/api/v1/acc").permitAll()
+                .anyRequest().authenticated()
             )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No session
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .headers(headers -> headers
                 .contentSecurityPolicy(csp -> csp
                     .policyDirectives("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self';")
                 )
-                .frameOptions(frameOptions -> frameOptions.sameOrigin())  // Allows framing of the content only from the same origin
+                .frameOptions(frameOptions -> frameOptions.sameOrigin())
                 .referrerPolicy(referrer -> referrer
                     .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER)
                 )
-                .cacheControl(cache -> cache.disable())  // Disables caching
+                .cacheControl(cache -> cache.disable())
             );
 
-        // Add Rate Limit Filter before JWT Authentication Filter
         http.addFilterBefore(rateLimitFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        // Add JWT Authentication Filter to handle authentication
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

@@ -1,4 +1,4 @@
-package com.wysi.quizigma.Security;
+package com.wysi.quizigma.security;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;

@@ -30,7 +30,7 @@ public class QuestionService {
     }
 
     public void createNewQuestion(QuestionDTO question, String token) {
-        if(userService.getUser(token).getId() != setRepository.findById(question.getSetId()).orElse(null).getOwner().getId()) {
+        if(!userService.getUser(token).getId().equals(setRepository.findById(question.getSetId()).orElse(null).getOwner().getId())) {
             throw new IllegalArgumentException("You are not the owner of this set");
         }
         List<Option> options = new ArrayList<>();

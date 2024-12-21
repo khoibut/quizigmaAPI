@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wysi.quizigma.DTO.UserDTO;
-import com.wysi.quizigma.Security.JwtUtil;
 import com.wysi.quizigma.model.User;
 import com.wysi.quizigma.repository.UserRepository;
+import com.wysi.quizigma.security.JwtUtil;
 
 @Service
 public class UserService {
@@ -21,6 +21,9 @@ public class UserService {
     }
 
     public String authenticate(String email, String password) {
+        if(email == null || password == null) {
+            throw new IllegalArgumentException("Invalid input");
+        }
         User user = userRepository.findByEmail(email);
         if (user == null || !user.getPassword().equals(password)) {
             throw new IllegalArgumentException("Invalid email or password");
@@ -32,6 +35,9 @@ public class UserService {
         String username = user.getUsername();
         String email = user.getEmail();
         String password = user.getPassword();
+        if (username == null || email == null || password == null) {
+            throw new IllegalArgumentException("Invalid input");
+        }
         if (userRepository.findByEmail(email) != null) {
             throw new IllegalArgumentException("Email already exists");
         }
@@ -58,7 +64,6 @@ public class UserService {
         if (user.getPassword() != null) {
             currentUser.setPassword(user.getPassword());
         }
-
         try{
             userRepository.save(currentUser);
         } catch (Exception e) {
