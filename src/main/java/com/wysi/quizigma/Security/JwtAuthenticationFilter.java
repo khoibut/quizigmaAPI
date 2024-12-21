@@ -3,6 +3,8 @@ package com.wysi.quizigma.Security;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-
+    private final static Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
@@ -30,23 +32,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
-        System.out.println("Request URL: " + request.getRequestURI());
-        System.out.println("Authorization Header: " + request.getHeader("Authorization"));
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
             try {
                 jwtUtil.isValid(token);
                 String userId = jwtUtil.getUserId(token).toString();
-                System.out.println(token);
-                System.out.println("User ID: " + userId);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                System.out.println("Authentication set: " + authentication);
             } catch (JwtException | IllegalArgumentException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Invalid or missing token");
                 response.getWriter().flush();
                 response.getWriter().close();
+                logger.error("Invalid or missing token {}", token);
                 return;
             }
         }

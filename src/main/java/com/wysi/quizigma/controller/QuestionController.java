@@ -20,7 +20,6 @@ import com.wysi.quizigma.service.QuestionService;
 @RestController
 @RequestMapping("/api/v1")
 public class QuestionController {
-    
     @Autowired
     private final QuestionService questionService;
 

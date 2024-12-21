@@ -16,7 +16,6 @@ import io.jsonwebtoken.security.SignatureException;
 public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
-
     public String generateToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getId().toString())
@@ -29,10 +28,8 @@ public class JwtUtil {
         try {
             token=token.replace("Bearer ", "").trim();
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token);
-            System.out.println("JWT Token is valid");
             return true;
         } catch (SignatureException | io.jsonwebtoken.MalformedJwtException | io.jsonwebtoken.ExpiredJwtException | io.jsonwebtoken.UnsupportedJwtException | IllegalArgumentException e) {
-            System.err.println("JWT Token validation failed: " + e.getMessage());
             return false;
         }
     }
