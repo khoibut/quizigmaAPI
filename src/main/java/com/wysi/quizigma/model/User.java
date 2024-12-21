@@ -1,6 +1,6 @@
 package com.wysi.quizigma.model;
 
-import com.wysi.quizigma.Security.InputSanitizer;
+import com.wysi.quizigma.security.InputSanitizer;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

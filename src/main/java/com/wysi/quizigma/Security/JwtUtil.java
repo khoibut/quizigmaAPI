@@ -1,4 +1,4 @@
-package com.wysi.quizigma.Security;
+package com.wysi.quizigma.security;
 
 import java.util.Date;
 
