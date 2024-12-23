@@ -58,6 +58,7 @@ public class UserController {
             response.put("token", token);
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals("Invalid email or password")) {
+                response.put("error", e.getMessage());
                 return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
             } else {
                 response.put("error", e.getMessage());
