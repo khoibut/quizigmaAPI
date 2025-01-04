@@ -5,11 +5,12 @@ public class AnswerDTO {
     private String username;
     private String answer;
     private Integer questionId;
-
-    public AnswerDTO(String username, String answer, Integer questionId) {
+    private String roomId;
+    public AnswerDTO(String username, String answer, Integer questionId, String roomId) {
         this.username = username;
         this.answer = answer;
         this.questionId = questionId;
+        this.roomId = roomId;
     }
 
     public AnswerDTO() {
@@ -39,4 +40,11 @@ public class AnswerDTO {
         this.answer = answer;
     }
 
-}
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+}   

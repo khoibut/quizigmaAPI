@@ -50,6 +50,9 @@ public class UserService {
     }
 
     public User getUser(String token) {
+        if(!jwtUtil.isValid(token)) {
+            throw new IllegalArgumentException("Invalid token");
+        }
         return userRepository.findById(jwtUtil.getUserId(token)).orElse(null);
     }
     

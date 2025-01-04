@@ -14,6 +14,8 @@ import com.wysi.quizigma.model.Set;
 import com.wysi.quizigma.repository.QuestionRepository;
 import com.wysi.quizigma.repository.SetRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class QuestionService {
 
@@ -51,14 +53,16 @@ public class QuestionService {
         questionRepository.save(newQuestion);
     }
 
+    @Transactional
     public List<QuestionDTO> getQuestionsBySet(Integer setId) {
         Set set = setRepository.findById(setId).orElse(null);
         List<Question> questions = questionRepository.findBySet(set);
         List<QuestionDTO> questionDTOs = new ArrayList<>();
         for (Question question : questions) {
+            List<Option> options = question.getOptions();
             List<OptionDTO> optionDTOs = new ArrayList<>();
-            for (Option option : question.getOptions()) {
-                optionDTOs.add(new OptionDTO(option.getId(),option.getOption(), option.getImage()));
+            for (Option option : options) {
+                optionDTOs.add(new OptionDTO(option.getId(), option.getOption(), option.getImage()));
             }
             questionDTOs.add(new QuestionDTO(
                     question.getId(),

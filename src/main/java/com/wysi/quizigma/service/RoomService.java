@@ -37,4 +37,9 @@ public class RoomService {
         Room room = new Room(set, user, roomDTO.getTimeLimit());
         return roomRepository.save(room).getRoomId();
     }
+
+    public Room getRoom(Integer roomId) {
+        return roomRepository.findById(roomId).orElse(null);
+    }
+
 }

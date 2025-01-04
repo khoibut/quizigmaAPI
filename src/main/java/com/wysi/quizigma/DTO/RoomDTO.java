@@ -1,24 +1,29 @@
 package com.wysi.quizigma.DTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RoomDTO {
-    private Integer Id;
+    private String Id;
     private Integer setId;
     private Integer timeLimit;
-
+    private boolean isStarted = false;
+    private List<PlayerDTO> players = new ArrayList<>();
     public RoomDTO() {
     }
-
-    public RoomDTO(Integer id, Integer setId, Integer timeLimit) {
-        Id = id;
+    public RoomDTO(Integer setId, Integer timeLimit) {
+        isStarted = false;
+        Id = null;
         this.setId = setId;
         this.timeLimit = timeLimit;
+        players = new ArrayList<>();
     }
 
-    public Integer getId() {
+    public String getId() {
         return Id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         Id = id;
     }
 
@@ -36,6 +41,30 @@ public class RoomDTO {
 
     public void setTimeLimit(Integer timeLimit) {
         this.timeLimit = timeLimit;
+    }
+
+    public List<PlayerDTO> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<PlayerDTO> players) {
+        this.players = players;
+    }
+
+    public void addPlayer(PlayerDTO player) {
+        players.add(player);
+    }
+
+    public void removePlayer(PlayerDTO player) {
+        players.remove(player);
+    }
+
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    public void setStarted(boolean started) {
+        isStarted = started;
     }
 
 }

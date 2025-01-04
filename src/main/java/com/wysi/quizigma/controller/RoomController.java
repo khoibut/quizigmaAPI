@@ -12,28 +12,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wysi.quizigma.DTO.RoomDTO;
-import com.wysi.quizigma.service.RoomService;
+import com.wysi.quizigma.service.GameService;
 
 @RestController
 @RequestMapping("/api/v1")
 public class RoomController {
 
-    private final RoomService roomService;
+    private final GameService gameService;
 
-    public RoomController(RoomService roomService) {
-        this.roomService = roomService;
+    public RoomController(GameService gameService) {
+        this.gameService = gameService;
     }
 
     @PostMapping("/room")
     public ResponseEntity<Object> createNewRoom(@RequestHeader("Authorization") String token, @RequestBody RoomDTO roomDTO) {
         Map<String, Object> response = new HashMap<>();
         try{
-            response.put("roomId", roomService.createRoom(roomDTO, token));
-            return new ResponseEntity<>(response,HttpStatus.CREATED);
+            response.put("roomId", gameService.addRoom(roomDTO));
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
 }
