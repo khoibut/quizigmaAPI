@@ -4,27 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoomDTO {
-    private String Id;
+    private String id;
+    private String creator;
     private Integer setId;
     private Integer timeLimit;
     private boolean isStarted = false;
+    private boolean lateJoin;
     private List<PlayerDTO> players = new ArrayList<>();
     public RoomDTO() {
     }
-    public RoomDTO(Integer setId, Integer timeLimit) {
+    public RoomDTO(Integer setId, String creator, Integer timeLimit, boolean lateJoin) {
         isStarted = false;
-        Id = null;
+        this.creator = creator;
+        id = null;
         this.setId = setId;
         this.timeLimit = timeLimit;
+        this.lateJoin = lateJoin;
         players = new ArrayList<>();
     }
 
     public String getId() {
-        return Id;
+        return id;
     }
 
     public void setId(String id) {
-        Id = id;
+        this.id = id;
     }
 
     public Integer getSetId() {
@@ -43,6 +47,13 @@ public class RoomDTO {
         this.timeLimit = timeLimit;
     }
 
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
     public List<PlayerDTO> getPlayers() {
         return players;
     }
@@ -65,6 +76,10 @@ public class RoomDTO {
 
     public void setStarted(boolean started) {
         isStarted = started;
+    }
+
+    public boolean isLateJoin() {
+        return lateJoin;
     }
 
 }

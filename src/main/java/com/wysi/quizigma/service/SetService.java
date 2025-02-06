@@ -46,7 +46,7 @@ public class SetService {
                 for(Option option : question.getOptions()) {
                     options.add(new OptionDTO(option.getId(),option.getOption(), option.getImage()));
                 }
-                questions.add(new QuestionDTO(question.getId(), question.getQuestion(), question.getImage(), question.getSet().getId(), options, question.getAnswers()));
+                questions.add(new QuestionDTO(question.getId(), question.getQuestion(),question.getType() ,question.getImage(), question.getSet().getId(), options, question.getAnswers()));
             }
             setDTOs.add(new SetDTO(set.getId(), set.getName(), set.getDescription(), set.getImage(), questions));
         }

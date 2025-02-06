@@ -1,6 +1,5 @@
 package com.wysi.quizigma.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -39,11 +38,11 @@ public class Room {
     public Room() {
     }
 
-    public Room(Set set, User host, Integer timeLimit) {
+    public Room(Set set, User host, Integer timeLimit, List<Player> players) {
         this.set = set;
         this.host = host;
         this.timeLimit = timeLimit;
-        this.players = new ArrayList<>();
+        this.players = players;
     }
 
     public Integer getRoomId() {

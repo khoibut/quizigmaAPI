@@ -20,11 +20,6 @@ public class SecurityConfig {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public RateLimitFilter rateLimitFilter() {
-        return new RateLimitFilter();
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.disable())
@@ -53,7 +48,6 @@ public class SecurityConfig {
                 .cacheControl(cache -> cache.disable())
             );
 
-        http.addFilterBefore(rateLimitFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

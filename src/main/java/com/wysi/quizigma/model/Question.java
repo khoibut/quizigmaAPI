@@ -28,6 +28,9 @@ public class Question {
     @Column(name = "question", nullable = false)
     private String question;
 
+    @Column(name = "type", nullable = true)
+    private String type;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
     private Image image;
@@ -36,7 +39,7 @@ public class Question {
     @JoinColumn(name = "set_id", nullable = false)
     private Set set;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options;
 
     @ElementCollection
@@ -46,9 +49,10 @@ public class Question {
     public Question() {
     }
 
-    public Question(String question, Image image, Set set, List<Option> options, List<Integer> answers) {
+    public Question(String question, String type, Image image, Set set, List<Option> options, List<Integer> answers) {
         question = new InputSanitizer().sanitize(question);
         this.question = question;
+        this.type = type;
         this.image = image;
         this.set = set;
         this.options = options;
@@ -81,6 +85,13 @@ public class Question {
         this.question = question;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
     public Image getImage() {
         return image;
     }

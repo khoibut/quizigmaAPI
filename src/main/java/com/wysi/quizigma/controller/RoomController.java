@@ -28,7 +28,7 @@ public class RoomController {
     public ResponseEntity<Object> createNewRoom(@RequestHeader("Authorization") String token, @RequestBody RoomDTO roomDTO) {
         Map<String, Object> response = new HashMap<>();
         try{
-            response.put("roomId", gameService.addRoom(roomDTO));
+            response.put("roomId", gameService.addRoom(roomDTO,token));
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             response.put("error", e.getMessage());

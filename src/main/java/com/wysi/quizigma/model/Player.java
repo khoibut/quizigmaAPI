@@ -22,11 +22,14 @@ public class Player {
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
-
+    
     @Column(name = "score", nullable = false)
+    private Integer Score;
+
+    @Column(name = "right_count", nullable = false)
     private Integer rightCount;
 
-    @Column(name = "wrong", nullable = false)
+    @Column(name = "wrong_count", nullable = false)
     private Integer wrongCount;
 
     public Player() {
@@ -39,6 +42,13 @@ public class Player {
         this.wrongCount = 0;
     }
 
+    public Player(String name, Room room, Integer rightCount, Integer wrongCount, Integer score) {
+        this.name = name;
+        this.room = room;
+        this.rightCount = rightCount;
+        this.wrongCount = wrongCount;
+        this.Score = score;
+    }
     public Integer getId() {
         return id;
     }

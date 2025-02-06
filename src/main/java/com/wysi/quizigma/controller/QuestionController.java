@@ -91,7 +91,7 @@ public class QuestionController {
             questionService.editQuestion(question, token);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error editing question by user Id {}", jwtUtil.getUserId(token));
+            logger.error("{}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

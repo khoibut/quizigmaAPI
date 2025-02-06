@@ -2,12 +2,12 @@ package com.wysi.quizigma.DTO;
 
 public class AnswerDTO {
 
-    private String username;
+    private String player;
     private String answer;
     private Integer questionId;
     private String roomId;
-    public AnswerDTO(String username, String answer, Integer questionId, String roomId) {
-        this.username = username;
+    public AnswerDTO(String player, String answer, Integer questionId, String roomId) {
+        this.player = player;
         this.answer = answer;
         this.questionId = questionId;
         this.roomId = roomId;
@@ -24,16 +24,16 @@ public class AnswerDTO {
         this.questionId = questionId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPlayer() {
+        return player;
     }
 
     public String getAnswer() {
         return answer;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String player) {
+        this.player = player;
     }
 
     public void setAnswer(String answer) {

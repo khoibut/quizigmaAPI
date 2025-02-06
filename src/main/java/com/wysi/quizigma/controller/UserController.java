@@ -56,6 +56,8 @@ public class UserController {
         try {
             String token = userService.authenticate(user.getEmail(), user.getPassword());
             response.put("token", token);
+            userService.getUser(token);
+            response.put("username", userService.getUser(token).getUsername());
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals("Invalid email or password")) {
                 response.put("error", e.getMessage());

@@ -55,7 +55,9 @@ public class UserService {
         }
         return userRepository.findById(jwtUtil.getUserId(token)).orElse(null);
     }
-    
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
     public String editUser(UserDTO user, String token) {
         User currentUser = userRepository.findById(jwtUtil.getUserId(token)).orElse(null);
         if (user.getUsername() != null) {

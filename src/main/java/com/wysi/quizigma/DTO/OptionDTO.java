@@ -30,7 +30,7 @@ public class OptionDTO {
         this.id = id;
         this.option = option;
         if (image.getImage() != null) {
-            this.image = image.getType()+Base64.getEncoder().encodeToString(image.getImage());
+            this.image = image.getType()+","+Base64.getEncoder().encodeToString(image.getImage());
         } else {
             this.image = null;
         }

@@ -1,27 +1,29 @@
 package com.wysi.quizigma.service;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.wysi.quizigma.DTO.AnswerDTO;
+import com.wysi.quizigma.DTO.OptionDTO;
 import com.wysi.quizigma.DTO.PlayerDTO;
 import com.wysi.quizigma.DTO.QuestionDTO;
 import com.wysi.quizigma.DTO.RoomDTO;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class GameService {
 
     private final ConcurrentHashMap<String, RoomDTO> rooms = new ConcurrentHashMap<>();
     private final UserService userService;
-    private final RoomService roomService;
     private final QuestionService questionService;
-
+    private final RoomService roomService;
+    private final SimpMessagingTemplate messagingTemplate;
     private String generatedRoomId() {
         Random random = new Random();
         while (true) {
@@ -32,21 +34,44 @@ public class GameService {
         }
     }
 
-    public GameService(UserService userService, RoomService roomService, QuestionService questionService) {
+    public GameService(UserService userService, QuestionService questionService, RoomService roomservice, SimpMessagingTemplate messagingTemplate) {
         this.userService = userService;
-        this.roomService = roomService;
         this.questionService = questionService;
+        this.roomService = roomservice;
+        this.messagingTemplate = messagingTemplate;
     }
 
-    public String addRoom(RoomDTO roomDTO) {
-        System.out.println("Adding room: " + roomDTO.getSetId());
-        String roomId = generatedRoomId();
-        roomDTO.setId(roomId);
-        rooms.put(roomId, roomDTO);
-        for (String key : rooms.keySet()) {
-            System.out.println("Room: " + key);
+    public String addRoom(RoomDTO roomDTO, String token) {
+        try {
+            String roomId = generatedRoomId();
+            roomDTO.setId(roomId);
+            roomDTO.setCreator(userService.getUser(token).getUsername());
+            rooms.put(roomId, roomDTO);
+            return roomId;
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Token is invalid");
         }
-        return roomId;
+    }
+
+    @Scheduled(fixedRate = 1000) // Runs every second
+    public void updateTimers() {
+        rooms.forEach((roomId, room) -> {
+            if (room.isStarted() && room.getTimeLimit() > 0) {
+                room.setTimeLimit(room.getTimeLimit() - 1);
+                HashMap<String, Object> response = new HashMap<>();
+                response.put("type", "timer");
+                response.put("time", room.getTimeLimit());
+                messagingTemplate.convertAndSend("/queue/creator/" + roomId, response);
+                messagingTemplate.convertAndSend("/topic/player/" + roomId, response);
+            } else if (room.getTimeLimit() == 0) {
+                saveRoom(roomId);
+                removeRoom(roomId);
+                HashMap<String, Object> response = new HashMap<>();
+                response.put("type", "end");
+                messagingTemplate.convertAndSend("/topic/player/" + roomId, response);
+                messagingTemplate.convertAndSend("/queue/creator/" + roomId, response);
+            }
+        });
     }
 
     public void checkRoom(String roomId) {
@@ -55,10 +80,34 @@ public class GameService {
         }
     }
 
-    public void addPlayer(String roomId, String playerName) {
-        System.out.println("Adding player: " + playerName + " to room: " + roomId);
-        if (!rooms.containsKey(roomId)) {
+    public boolean isStarted(String roomId) {
+        return rooms.get(roomId).isStarted();
+    }
+
+    public void checkOwnedRoom(String roomId, String token) {
+        try {
+            checkRoom(roomId);
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Room does not exist");
+        }
+        if (!rooms.get(roomId).getCreator().equals(userService.getUser(token).getUsername())) {
+            throw new IllegalArgumentException("User does not own room");
+        }
+    }
+
+    public void saveRoom(String RoomId) {
+        RoomDTO room = rooms.get(RoomId);
+        roomService.saveRoom(room);
+
+    }
+
+    public void addPlayer(String roomId, String playerName) {
+        RoomDTO room = rooms.get(roomId);
+        if (!rooms.containsKey(roomId)) {
+            throw new IllegalArgumentException("Room " + roomId + " does not exist");
+        }
+        if (room.isStarted() && !room.isLateJoin()) {
+            throw new IllegalArgumentException("Game has already started");
         }
         for (PlayerDTO player : rooms.get(roomId).getPlayers()) {
             if (player.getName().equals(playerName)) {
@@ -69,14 +118,11 @@ public class GameService {
         rooms.get(roomId).addPlayer(playerDTO);
     }
 
-    public List<String> getPlayers(String roomId) {
+    public List<PlayerDTO> getPlayers(String roomId) {
         if (!rooms.containsKey(roomId)) {
             throw new IllegalArgumentException("Room does not exist");
         }
-        List<String> players = new ArrayList<>();
-        for (PlayerDTO player : rooms.get(roomId).getPlayers()) {
-            players.add(player.getName());
-        }
+        List<PlayerDTO> players = rooms.get(roomId).getPlayers();
         return players;
     }
 
@@ -110,6 +156,7 @@ public class GameService {
         rooms.remove(roomId);
     }
 
+    @Transactional
     public List<QuestionDTO> getQuestions(String roomId) {
         if (!rooms.containsKey(roomId)) {
             throw new IllegalArgumentException("Room does not exist");
@@ -117,7 +164,11 @@ public class GameService {
         RoomDTO room = rooms.get(roomId);
         List<QuestionDTO> questions = questionService.getQuestionsBySet(room.getSetId());
         for (QuestionDTO question : questions) {
-            question.setAnswers(null);
+            if ("MCQ".equals(question.getType())) {
+                question.setAnswers(null);
+            } else {
+                question.setOptions(null);
+            }
         }
         return questions;
     }
@@ -134,22 +185,34 @@ public class GameService {
         }
         for (QuestionDTO question : questionService.getQuestionsBySet(room.getSetId())) {
             if (question.getId().equals(answerDTO.getQuestionId())) {
-                if (question.getAnswers().contains(Integer.valueOf(answerDTO.getAnswer()))) {
-                    result = true;
+                if ("MCQ".equals(question.getType())) {
+                    if (question.getAnswers().contains(Integer.valueOf(answerDTO.getAnswer()))) {
+                        result = true;
+                    }
+                } else {
+                    for (OptionDTO option : question.getOptions()) {
+                        if (option.getOption().equals(answerDTO.getAnswer())) {
+                            result = true;
+                        }
+                    }
                 }
             }
-            PlayerDTO player = null;
-            for (PlayerDTO p : room.getPlayers()) {
-                if (p.getName().equals(answerDTO.getUsername())) {
-                    player = p;
-                }
+        }
+        PlayerDTO player = null;
+        for (PlayerDTO p : room.getPlayers()) {
+            if (p.getName().equals(answerDTO.getPlayer())) {
+                player = p;
             }
+        }
+        if (player != null) {
             if (result) {
                 player.incrementScore();
                 player.incrementCorrect();
-            }else{
+            } else {
                 player.incrementIncorrect();
             }
+        } else {
+            throw new IllegalArgumentException("Player does not exist");
         }
         return result;
     }

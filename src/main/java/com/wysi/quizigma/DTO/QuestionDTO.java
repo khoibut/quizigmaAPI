@@ -10,28 +10,32 @@ public class QuestionDTO {
 
     private Integer id;
     private String question;
+    private String type;
     private String image;
     private Integer setId;
-    private List<OptionDTO> options=new ArrayList<>();
+    private List<OptionDTO> options = new ArrayList<>();
+
     private List<Integer> answers;
 
     public QuestionDTO() {
     }
 
-    public QuestionDTO(String question, String image, Integer setId, List<OptionDTO> options, List<Integer> answers) {
+    public QuestionDTO(String question, String type, String image, Integer setId, List<OptionDTO> options, List<Integer> answers) {
         this.id = null;
         this.question = question;
+        this.type = type;
         this.image = image;
         this.setId = setId;
         this.options = options;
         this.answers = answers != null ? answers : new ArrayList<>();
     }
 
-    public QuestionDTO(Integer id, String question, Image image, Integer setId, List<OptionDTO> options, List<Integer> answers) {
+    public QuestionDTO(Integer id, String question, String type, Image image, Integer setId, List<OptionDTO> options, List<Integer> answers) {
         this.id = id;
         this.question = question;
+        this.type = type;
         if (image.getImage() != null) {
-            this.image = image.getType() + Base64.getEncoder().encodeToString(image.getImage());
+            this.image = image.getType() + "," + Base64.getEncoder().encodeToString(image.getImage());
         } else {
             this.image = null;
         }
@@ -55,7 +59,15 @@ public class QuestionDTO {
     public void setQuestion(String question) {
         this.question = question;
     }
-    
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getImage() {
         return image;
     }

@@ -30,7 +30,7 @@ public class SetDTO {
         this.name = name;
         this.description = description;
         if(image.getImage()!=null){
-            this.image = image.getType()+Base64.getEncoder().encodeToString(image.getImage());
+            this.image = image.getType()+","+Base64.getEncoder().encodeToString(image.getImage());
         } else {
             this.image = null;
         }
