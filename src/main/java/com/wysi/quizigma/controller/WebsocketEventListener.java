@@ -49,6 +49,7 @@ public class WebsocketEventListener {
                 logger.info("Room " + roomId + " has been removed");
                 HashMap<String, Object> response = new HashMap<>();
                 response.put("type", "end");
+                response.put("players", gameService.getPlayers(roomId));
                 messagingTemplate.convertAndSend("/topic/player/" + roomId, response);
                 gameService.saveRoom(roomId);
                 gameService.removeRoom(roomId);

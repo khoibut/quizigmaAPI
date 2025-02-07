@@ -64,10 +64,12 @@ public class GameService {
                 messagingTemplate.convertAndSend("/queue/creator/" + roomId, response);
                 messagingTemplate.convertAndSend("/topic/player/" + roomId, response);
             } else if (room.getTimeLimit() == 0) {
+                HashMap<String, Object> response = new HashMap<>();
+                response.put("players", room.getPlayers());
+                response.put("type", "end");
+                System.out.println(room.getPlayers().size());
                 saveRoom(roomId);
                 removeRoom(roomId);
-                HashMap<String, Object> response = new HashMap<>();
-                response.put("type", "end");
                 messagingTemplate.convertAndSend("/topic/player/" + roomId, response);
                 messagingTemplate.convertAndSend("/queue/creator/" + roomId, response);
             }

@@ -70,13 +70,13 @@ public class QuizService {
             List<String> options = (List<String>) question.get("answers");
             List<Integer> newAnswers = new ArrayList<>();
             List<String> answers = (List<String>) question.get("correctAnswers");
-            for(int i = 0; i < options.size(); i++) {
+            for (int i = 0; i < options.size(); i++) {
                 OptionDTO newOption = new OptionDTO();
                 newOption.setOption(options.get(i));
                 newOption.setImage("null");
                 newOptions.add(newOption);
                 if (answers.contains(options.get(i))) {
-                    newAnswers.add(i);
+                    newAnswers.add(i+1);
                 }
             }
             newQuestion.setOptions(newOptions);
@@ -145,7 +145,11 @@ public class QuizService {
             newQuestion.setSetId(Integer.valueOf(setId));
             List<OptionDTO> newOptions = new ArrayList<>();
             List<Map<String, Object>> options = (List<Map<String, Object>>) structure.get("options");
-            Integer answers = structure.get("answer") != null ? (Integer) structure.get("answer") : null;
+            Integer answers = null;
+            if (type.equals("MCQ")) {
+                answers = structure.get("answer") != null ? (Integer) structure.get("answer") : null;
+                answers = answers != null ? answers + 1 : null;
+            }
             options.forEach(option -> {
                 OptionDTO newOption = new OptionDTO();
                 String optiontext = (String) option.get("text");
@@ -154,7 +158,9 @@ public class QuizService {
                 newOptions.add(newOption);
             });
             List<Integer> newAnswers = new ArrayList<>();
-            newAnswers.add(answers);
+            if(answers != null) {
+                newAnswers.add(answers);
+            }
             newQuestion.setOptions(newOptions);
             newQuestion.setAnswers(newAnswers);
             if (!"MCQ".equals(type) || !"TA".equals(type)) {

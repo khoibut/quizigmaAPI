@@ -113,6 +113,7 @@ public class GameController {
         }
         HashMap<String, Object> response = new HashMap<>();
         response.put("type", "end");
+        response.put("players", gameService.getPlayers(room));
         messagingTemplate.convertAndSend("/queue/creator/" + room, response);
         messagingTemplate.convertAndSend("/topic/player/" + room, response);
     }
