@@ -105,15 +105,20 @@ public class GameController {
     public void endRoom(@RequestBody Map<String, String> body) {
         String room = body.get("room");
         logger.info("Ending room: {}", room);
+        HashMap<String, Object> response = new HashMap<>();
+        System.out.println(gameService.getPlayers(room).size());
+        System.out.println(gameService.getPlayers(room).size());
+        System.out.println(gameService.getPlayers(room).size());
+        System.out.println(gameService.getPlayers(room).size());
+        System.out.println(gameService.getPlayers(room).size());
         try {
+            response.put("players", gameService.getPlayers(room));
             gameService.saveRoom(room);
             gameService.removeRoom(room);
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
         }
-        HashMap<String, Object> response = new HashMap<>();
         response.put("type", "end");
-        response.put("players", gameService.getPlayers(room));
         messagingTemplate.convertAndSend("/queue/creator/" + room, response);
         messagingTemplate.convertAndSend("/topic/player/" + room, response);
     }
