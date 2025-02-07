@@ -106,13 +106,9 @@ public class GameController {
         String room = body.get("room");
         logger.info("Ending room: {}", room);
         HashMap<String, Object> response = new HashMap<>();
-        response.put("players", gameService.getPlayers(room));
-        System.out.println(gameService.getPlayers(room).size());
-        System.out.println(gameService.getPlayers(room).size());
-        System.out.println(gameService.getPlayers(room).size());
-        System.out.println(gameService.getPlayers(room).size());
-        System.out.println(gameService.getPlayers(room).size());
         try {
+            response.put("players", gameService.getPlayers(room));
+            System.out.println(gameService.getPlayers(room).size());
             gameService.saveRoom(room);
             gameService.removeRoom(room);
         } catch (IllegalArgumentException e) {
