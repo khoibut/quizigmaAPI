@@ -1,5 +1,7 @@
 package com.wysi.quizigma.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +55,44 @@ public class SetService {
         return setDTOs;
     }
 
+    public List<SetDTO> getRecentSets() {
+        List<Set> sets = setRepository.findTop10ByOrderByIdDesc();
+        List<SetDTO> setDTOs = new ArrayList<>();
+        for(Set set : sets) {
+            List<QuestionDTO> questions = new ArrayList<>();
+            for(Question question : set.getQuestions()) {
+                List<OptionDTO> options = new ArrayList<>();
+                for(Option option : question.getOptions()) {
+                    options.add(new OptionDTO(option.getId(),option.getOption(), option.getImage()));
+                }
+                questions.add(new QuestionDTO(question.getId(), question.getQuestion(),question.getType() ,question.getImage(), question.getSet().getId(), options, question.getAnswers()));
+            }
+            setDTOs.add(new SetDTO(set.getId(), set.getName(), set.getDescription(), set.getImage(), questions));
+        }
+        return setDTOs;
+    }
+
+    public List<SetDTO> getSetsByName(String name) {
+        try {
+            name = URLDecoder.decode(name, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("UTF-8 encoding is not supported", e);
+        }
+        List<Set> sets = setRepository.findTop10ByNameContainingIgnoreCase(name);
+        List<SetDTO> setDTOs = new ArrayList<>();
+        for(Set set : sets) {
+            List<QuestionDTO> questions = new ArrayList<>();
+            for(Question question : set.getQuestions()) {
+                List<OptionDTO> options = new ArrayList<>();
+                for(Option option : question.getOptions()) {
+                    options.add(new OptionDTO(option.getId(),option.getOption(), option.getImage()));
+                }
+                questions.add(new QuestionDTO(question.getId(), question.getQuestion(),question.getType() ,question.getImage(), question.getSet().getId(), options, question.getAnswers()));
+            }
+            setDTOs.add(new SetDTO(set.getId(), set.getName(), set.getDescription(), set.getImage(), questions));
+        }
+        return setDTOs;
+    }
     public void editSet(SetDTO set, User owner) {
         if(setRepository.findById(set.getId()).orElse(null).getOwner() != owner) {
             throw new IllegalArgumentException("You are not the owner of this set");

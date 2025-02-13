@@ -56,6 +56,16 @@ public class SetController {
         setService.createNewSet(newSet, userService.getUser(token));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @GetMapping("/discovery")
+    public ResponseEntity<List<SetDTO>> getRecentSets() {
+        return new ResponseEntity<>(setService.getRecentSets(), HttpStatus.OK);
+    }    
+
+    @GetMapping("/search")
+    public ResponseEntity<List<SetDTO>> searchSets(@RequestParam String searchBar) {
+        return new ResponseEntity<>(setService.getSetsByName(searchBar), HttpStatus.OK);
+    }
     @Operation(summary = "Get all sets", description = "Get all sets created by the user")
     @ApiResponse(responseCode = "200", description = "Sets returned")
     @GetMapping("")

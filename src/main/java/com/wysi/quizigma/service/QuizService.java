@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,6 +25,56 @@ public class QuizService {
     public QuizService(WebClient.Builder webClientBuilder, QuestionService questionService) {
         this.webClient = webClientBuilder.build();
         this.questionService = questionService;
+    }
+
+    public void fetchSpreadsheetData(String setId, String token, XSSFSheet sheet) {
+        List<QuestionDTO> newQuestions = new ArrayList<>();
+        for (int row = 1; row < sheet.getLastRowNum(); row++) {
+            if (sheet.getRow(row) == null) {
+                continue;
+            }
+            XSSFRow currentRow = sheet.getRow(row);
+            QuestionDTO newQuestion = new QuestionDTO();
+            newQuestion.setSetId(Integer.valueOf(setId));
+            newQuestion.setQuestion(currentRow.getCell(0).getStringCellValue());
+            newQuestion.setType(currentRow.getCell(1).getStringCellValue());
+            List<OptionDTO> newOptions = new ArrayList<>();
+            for (int col=2; col<currentRow.getLastCellNum()-1; col++) {
+                XSSFCell currentCell = sheet.getRow(row).getCell(col);
+                if(currentCell == null) {
+                    continue;
+                }
+                OptionDTO newOption = new OptionDTO();
+                newOption.setOption(currentCell.getStringCellValue());
+                newOption.setImage("null");
+                newOptions.add(newOption);
+            }
+            newQuestion.setOptions(newOptions);
+            if("TA".equals(newQuestion.getType())){
+                newQuestion.setAnswers(new ArrayList<>());
+                newQuestion.setImage(null);
+                newQuestions.add(newQuestion);
+                continue;
+            }
+            List<Integer> newAnswers = new ArrayList<>();
+            String answer = currentRow.getCell(currentRow.getLastCellNum()-1).getStringCellValue();
+            String[] answers = answer.split(",");
+            for (String ans : answers) {
+                newAnswers.add(Integer.valueOf(ans));
+            }
+            newQuestion.setAnswers(newAnswers);
+            newQuestion.setImage(null);
+            newQuestions.add(newQuestion);
+        }
+        newQuestions.forEach(question -> {
+            questionService.createNewQuestion(question, token);
+            System.out.println(question.getQuestion());
+            System.out.println(question.getType());
+            question.getOptions().forEach(option -> {
+                System.out.println(option.getOption());
+            });
+            System.out.println(question.getAnswers());
+        });
     }
 
     public void fetchBlooketData(String setId, String token, String url) {
@@ -76,7 +129,7 @@ public class QuizService {
                 newOption.setImage("null");
                 newOptions.add(newOption);
                 if (answers.contains(options.get(i))) {
-                    newAnswers.add(i+1);
+                    newAnswers.add(i + 1);
                 }
             }
             newQuestion.setOptions(newOptions);
@@ -158,7 +211,7 @@ public class QuizService {
                 newOptions.add(newOption);
             });
             List<Integer> newAnswers = new ArrayList<>();
-            if(answers != null) {
+            if (answers != null) {
                 newAnswers.add(answers);
             }
             newQuestion.setOptions(newOptions);

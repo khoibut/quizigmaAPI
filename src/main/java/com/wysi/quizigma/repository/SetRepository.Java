@@ -15,4 +15,7 @@ public interface SetRepository extends JpaRepository<Set, Integer> {
 
     public List<Set> findByOwner(User owner);
 
+    public List<Set> findTop10ByOrderByIdDesc();
+
+    public List<Set> findTop10ByNameContainingIgnoreCase(String name);
 }

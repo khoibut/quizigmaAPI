@@ -40,7 +40,6 @@ public class QuestionService {
         List<Option> options = new ArrayList<>();
         List<Integer> answers = question.getAnswers();
         Set set = setRepository.findById(question.getSetId()).orElse(null);
-        System.out.println(answers);
         Question newQuestion = new Question();
         for (OptionDTO optionDTO : question.getOptions()) {
             Option option = new Option(optionDTO.getOption(), optionDTO.getImage());

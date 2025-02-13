@@ -10,7 +10,9 @@ public class InputSanitizer {
         if(html == null) {
             return null;
         }
-        return Jsoup.clean(html, Safelist.basic());  // You can customize the Safelist as per your need
+        Safelist basicSafeList = Safelist.basic();
+        basicSafeList.addTags("StaticMathField");
+        return Jsoup.clean(html, basicSafeList);  // You can customize the Safelist as per your need
     }
 
 }
