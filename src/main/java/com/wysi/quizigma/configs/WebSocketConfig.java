@@ -45,6 +45,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setAllowedOriginPatterns("*")
                 .withSockJS()
                 .setHeartbeatTime(10000);
+        registry.addEndpoint("/assignment")
+                .setAllowedOriginPatterns("*")
+                .withSockJS()
+                .setHeartbeatTime(10000);
+
     }
 
     @Bean

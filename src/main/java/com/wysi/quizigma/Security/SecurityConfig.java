@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .requestMatchers("/quizz/**").permitAll()
                 .requestMatchers("/player/**").permitAll()
                 .requestMatchers("/creator/**").permitAll()
+                .requestMatchers("/assignment/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

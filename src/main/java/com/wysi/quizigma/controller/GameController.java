@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import com.wysi.quizigma.DTO.AnswerDTO;
 import com.wysi.quizigma.DTO.PlayerDTO;
 import com.wysi.quizigma.DTO.QuestionDTO;
+import com.wysi.quizigma.service.AssignmentService;
 import com.wysi.quizigma.service.GameService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -23,10 +24,12 @@ public class GameController {
 
     private static final Logger logger = LoggerFactory.getLogger(GameController.class);
     private final GameService gameService;
+    private final AssignmentService assignmentService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate) {
+    public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate, AssignmentService assignmentService) {
         this.gameService = gameService;
+        this.assignmentService = assignmentService;
         this.messagingTemplate = messagingTemplate;
     }
 
@@ -145,6 +148,45 @@ public class GameController {
             response.put("type", "error");
             response.put("error", e.getMessage());
             messagingTemplate.convertAndSend("/queue/" + room + "/" + player, response);
+            logger.error(e.getMessage());
+        }
+    }
+    @MessageMapping("/player/assignment/join")
+    public void playerJoinAssignment(@RequestBody Map<String, String> body) {
+        String assignmentId = body.get("assignment");
+        String player = body.get("player");
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            logger.info("Player {} joined assignment: {}", player, assignmentId);
+            assignmentService.addPlayer(assignmentId, player);
+            response.put("type", "start");
+            response.put("questions", assignmentService.getQuestions(assignmentId));
+            messagingTemplate.convertAndSend("/queue/assignment/" + assignmentId + "/" + player, response);
+        } catch (IllegalArgumentException e) {
+            response.put("type", "error");
+            response.put("error", e.getMessage());
+            messagingTemplate.convertAndSend("/queue/assignment/" + assignmentId + "/" + player, response);
+            logger.error(e.getMessage());
+        }
+    }
+    @MessageMapping("/player/assignment/answer")
+    public void answerAssignment(@RequestBody AnswerDTO answerDTO) {
+        String assignmentId = answerDTO.getRoomId();
+        String player = answerDTO.getPlayer();
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            logger.info("Player {} answered assignment: {}", player, assignmentId);
+            boolean correct = assignmentService.answerQuestion(assignmentId, answerDTO);
+            if (correct) {
+                response.put("type", "correct");
+            } else {
+                response.put("type", "wrong");
+            }
+            messagingTemplate.convertAndSend("/queue/assignment/" + assignmentId + "/" + player, response);
+        } catch (IllegalArgumentException e) {
+            response.put("type", "error");
+            response.put("error", e.getMessage());
+            messagingTemplate.convertAndSend("/queue/assignment/" + assignmentId + "/" + player, response);
             logger.error(e.getMessage());
         }
     }

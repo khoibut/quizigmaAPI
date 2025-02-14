@@ -9,14 +9,16 @@ public class SetDTO {
 
     private Integer id;
     private String name;
+    private String author;
     private String description;
     private String image;
     private List<QuestionDTO> questions;
 
     // Parameterized constructor
-    public SetDTO(Integer id, String name, String description, String image, List<QuestionDTO> questions) {
+    public SetDTO(Integer id, String name, String author, String description, String image, List<QuestionDTO> questions) {
         this.id = id;
         this.name = name;
+        this.author = author;
         this.description = description;
         this.image = image;
         this.questions = questions;
@@ -25,12 +27,13 @@ public class SetDTO {
     public SetDTO() {
     }
 
-    public SetDTO(Integer id, String name, String description, Image image, List<QuestionDTO> questions) {
+    public SetDTO(Integer id, String name, String author, String description, Image image, List<QuestionDTO> questions) {
         this.id = id;
         this.name = name;
         this.description = description;
-        if(image.getImage()!=null){
-            this.image = image.getType()+","+Base64.getEncoder().encodeToString(image.getImage());
+        this.author = author;
+        if (image.getImage() != null) {
+            this.image = image.getType() + "," + Base64.getEncoder().encodeToString(image.getImage());
         } else {
             this.image = null;
         }
@@ -52,6 +55,14 @@ public class SetDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getDescription() {

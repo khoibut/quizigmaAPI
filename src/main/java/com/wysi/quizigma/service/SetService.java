@@ -50,7 +50,7 @@ public class SetService {
                 }
                 questions.add(new QuestionDTO(question.getId(), question.getQuestion(),question.getType() ,question.getImage(), question.getSet().getId(), options, question.getAnswers()));
             }
-            setDTOs.add(new SetDTO(set.getId(), set.getName(), set.getDescription(), set.getImage(), questions));
+            setDTOs.add(new SetDTO(set.getId(), set.getName(),owner.getUsername(), set.getDescription(), set.getImage(), questions));
         }
         return setDTOs;
     }
@@ -60,6 +60,7 @@ public class SetService {
         List<SetDTO> setDTOs = new ArrayList<>();
         for(Set set : sets) {
             List<QuestionDTO> questions = new ArrayList<>();
+            User owner = set.getOwner();
             for(Question question : set.getQuestions()) {
                 List<OptionDTO> options = new ArrayList<>();
                 for(Option option : question.getOptions()) {
@@ -67,7 +68,7 @@ public class SetService {
                 }
                 questions.add(new QuestionDTO(question.getId(), question.getQuestion(),question.getType() ,question.getImage(), question.getSet().getId(), options, question.getAnswers()));
             }
-            setDTOs.add(new SetDTO(set.getId(), set.getName(), set.getDescription(), set.getImage(), questions));
+            setDTOs.add(new SetDTO(set.getId(), set.getName(),owner.getUsername(), set.getDescription(), set.getImage(), questions));
         }
         return setDTOs;
     }
@@ -81,6 +82,7 @@ public class SetService {
         List<Set> sets = setRepository.findTop10ByNameContainingIgnoreCase(name);
         List<SetDTO> setDTOs = new ArrayList<>();
         for(Set set : sets) {
+            User owner = set.getOwner();
             List<QuestionDTO> questions = new ArrayList<>();
             for(Question question : set.getQuestions()) {
                 List<OptionDTO> options = new ArrayList<>();
@@ -89,7 +91,7 @@ public class SetService {
                 }
                 questions.add(new QuestionDTO(question.getId(), question.getQuestion(),question.getType() ,question.getImage(), question.getSet().getId(), options, question.getAnswers()));
             }
-            setDTOs.add(new SetDTO(set.getId(), set.getName(), set.getDescription(), set.getImage(), questions));
+            setDTOs.add(new SetDTO(set.getId(), set.getName(),owner.getUsername(), set.getDescription(), set.getImage(), questions));
         }
         return setDTOs;
     }

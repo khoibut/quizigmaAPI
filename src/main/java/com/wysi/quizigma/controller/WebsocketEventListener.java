@@ -44,7 +44,7 @@ public class WebsocketEventListener {
             } catch (IllegalArgumentException e) {
                 logger.info("Player " + player + " does not exist in room " + roomId);
             }
-        } else {
+        } else if (roomId != null) {
             try {
                 logger.info("Room " + roomId + " has been removed");
                 HashMap<String, Object> response = new HashMap<>();
